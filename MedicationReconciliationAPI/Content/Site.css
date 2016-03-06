@@ -1,0 +1,122 @@
+﻿body{
+	font-family: Calibri,Candara,Segoe,"Segoe UI",Optima,Arial,sans-serif;
+	overflow: hidden;
+}
+
+header {
+	width:100%;
+	position:absolute;
+	top:0px;
+	left:0px;
+	height:82px;
+	background-color: #27546B;
+
+	display:inline-block;
+}
+
+button{
+	display: inline-block;
+	background: none;
+}
+
+
+header img {
+	display: inline-block;
+}
+
+header h3 {
+	display: inline-block;
+	padding: 0px 0px;
+	margin-bottom:1px;
+	margin-left:10px;
+	color: #fff;
+	vertical-align: bottom;
+}
+
+.body{
+	margin-top:82px;
+	position:relative;
+	height:100%;
+}
+
+
+.patient{
+	height:639px;
+	border-bottom:1px solid black;
+}
+.patient div{
+	display:inline-block;
+}
+
+.patient div h2 {
+	width:100%;
+	border-bottom:1px solid black;
+}
+
+.patient-list {
+	position: relative;
+	width:48%;
+}
+
+.selected-patient{
+	position: relative;
+	width: 48%;
+	margin-left: 1%;
+	vertical-align: top;
+
+	opacity: 0;
+	transition:1s;
+}
+
+#patient-container{
+	border-radius: 5px;
+	box-shadow: inset 0px 0px 10px #B0C7CE, 0 0 20px #B0C7CE;
+	width:100%;
+	height:500px;
+	border:none;
+}
+.patient-search{
+	position:relative;
+	height:20px;
+	margin-bottom:20px;
+	width:100%;
+}
+
+#patient-search{
+	width:80%;
+	border: none;
+	height:20px;
+	display:inline-block;
+}
+
+.input-button{
+	width:10%;
+	margin-left:9%;
+	display: inline-block;
+}
+
+#patient-container{
+	overflow: scroll
+}
+
+#reconcile-button{
+	margin-top:50px;
+}
+
+#reconciliation{
+	height:721px;
+	padding:15px;
+}
+
+.recon-header h2{
+	display: inline-block;
+	margin-right:70%;
+}
+
+.single-patient {
+    position:relative;
+    width:100%;
+    margin-top:10px;
+    font-weight:bold;
+    padding-left:10px;
+}

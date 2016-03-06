@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicationReconciliationAPI", "MedicationReconciliationAPI\MedicationReconciliationAPI.csproj", "{BD873287-D8CE-4FD9-B509-DD5A4F4D1188}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityTest", "SecurityTest\SecurityTest.csproj", "{2EB3D11F-316A-4BE1-87F7-5DD8D4C2B45A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD873287-D8CE-4FD9-B509-DD5A4F4D1188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD873287-D8CE-4FD9-B509-DD5A4F4D1188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD873287-D8CE-4FD9-B509-DD5A4F4D1188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD873287-D8CE-4FD9-B509-DD5A4F4D1188}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EB3D11F-316A-4BE1-87F7-5DD8D4C2B45A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EB3D11F-316A-4BE1-87F7-5DD8D4C2B45A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EB3D11F-316A-4BE1-87F7-5DD8D4C2B45A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EB3D11F-316A-4BE1-87F7-5DD8D4C2B45A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

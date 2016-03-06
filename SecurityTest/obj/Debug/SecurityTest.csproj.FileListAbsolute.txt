@@ -1,0 +1,10 @@
+C:\Users\IMO-Support\Desktop\MedicationReconciliationAPI\SecurityTest\bin\Debug\SecurityTest.exe.config
+C:\Users\IMO-Support\Desktop\MedicationReconciliationAPI\SecurityTest\bin\Debug\SecurityTest.exe
+C:\Users\IMO-Support\Desktop\MedicationReconciliationAPI\SecurityTest\bin\Debug\SecurityTest.pdb
+C:\Users\IMO-Support\Desktop\MedicationReconciliationAPI\SecurityTest\bin\Debug\IdentityModel.dll
+C:\Users\IMO-Support\Desktop\MedicationReconciliationAPI\SecurityTest\bin\Debug\Newtonsoft.Json.dll
+C:\Users\IMO-Support\Desktop\MedicationReconciliationAPI\SecurityTest\bin\Debug\IdentityModel.pdb
+C:\Users\IMO-Support\Desktop\MedicationReconciliationAPI\SecurityTest\bin\Debug\Newtonsoft.Json.xml
+C:\Users\IMO-Support\Desktop\MedicationReconciliationAPI\SecurityTest\obj\Debug\SecurityTest.csprojResolveAssemblyReference.cache
+C:\Users\IMO-Support\Desktop\MedicationReconciliationAPI\SecurityTest\obj\Debug\SecurityTest.exe
+C:\Users\IMO-Support\Desktop\MedicationReconciliationAPI\SecurityTest\obj\Debug\SecurityTest.pdb

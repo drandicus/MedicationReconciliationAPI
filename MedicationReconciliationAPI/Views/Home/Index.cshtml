@@ -1,0 +1,47 @@
+﻿<header>
+    <img src='http://www.forerunsystems.com/Portals/196581/images/IMO%20Logo.JPG' />
+    <h3>Medication Reconciliation Client</h3>
+</header>
+
+<div class='body'>
+    <div class='patient'>
+        <div class='patient-list'>
+            <h2>Patient List</h2>
+            <div class='patient-search'>
+                <input id='patient-search' class='form-control' type='text' placeholder='Search Patient' />
+                <button class='btn btn-primary input-button' id='search'> Search </button>
+            </div>
+            <div id='patient-container'></div>
+        </div>
+
+        <div class='selected-patient' id='selected-patient'>
+            <h2>Selected Patient</h2>
+            <h3 id='patient-name'>Patient Name</h3>
+            <button class='btn btn-primary' id='reconcile-button'> Reconcile Information </button>
+        </div>
+    </div>
+
+    <div class='reconciliation' id='reconciliation'>
+        <div class='recon-header'>
+            <h2>Reconciliation</h2>
+            <button class='btn btn-primary' style='display:inline-block' id='back'> Back to Patient Search </button>
+        </div>
+
+        <div>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">My Med List</a></li>
+                <li role="presentation"><a href="#rcopia" aria-controls="rcopia" role="tab" data-toggle="tab">Rcopia Med List</a></li>
+                <li role="presentation"><a href="#recon" aria-controls="recon" role="tab" data-toggle="tab">Reconciled Medication List</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="home">qplss</div>
+                <div role="tabpanel" class="tab-pane" id="rcopia">asss</div>
+                <div role="tabpanel" class="tab-pane" id="recon">pen</div>
+            </div>
+
+        </div>
+    </div>
+</div>
