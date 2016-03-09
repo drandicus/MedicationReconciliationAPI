@@ -3,13 +3,29 @@
     Handles the pretty parts of the client
 */
 
+var selectedPatient = -1;
+var patients = [];
+var token = "";
+
 $('#search').click(function (e) {
     var searchTerm = $('#patient-search').val();
     if (searchTerm.length == 0) {
         return;
     }
 
-    displaySinglePatient(searchTerm);
+    var filteredList = [];
+    for (var i = 0; i < patients.length; i++) {
+        if (patients[i]["name"].indexOf(searchTerm) > -1) {
+            filteredList.push(patients[i]);
+        }
+    }
+    
+    if (filteredList.length == 0) {
+        alert("No Patient Found");
+    } else {
+        displayPatients(filteredList);
+    }
+
 })
 
 $('#reconcile-button').click(function (e) {
@@ -33,16 +49,11 @@ $('#back').click(function (e) {
     It handles the full trip part of the project
 */
 
-var selectedPatient = -1;
-var patients = [];
-var token = "";
-
 function displaySinglePatient(patientName) {
     $('#selected-patient').css('opacity', "1");
     $('#patient-name').html(patientName);
 
-    $('#')
-    var patientID = patients[selectedPatient]["id"];
+    var patient = patients[selectedPatient];
 
     var getURL = '/api/record?id=' + patientID;
     $.get(getURL, function (data) {
@@ -53,7 +64,7 @@ function displaySinglePatient(patientName) {
 /**
     This method displays the names of the patient gotten from our API into the DOM
 */
-function displayPatients() {
+function getPatients() {
     $.get('/api/record', function (data) {
         var half = data.length / 2;
         for (var i = 0; i < half; i++) {
@@ -64,13 +75,18 @@ function displayPatients() {
             patients.push(elem);
         }
 
-        for (var i = 0; i < half; i++) {
-            var html = "<div class='single-patient' target='" + i + "'>" + patients[i].name + "</div>";
-            $('#patient-container').append(html);
-        }
-
+        displayPatients(patients);
         setUpEventHandlers();
     })
+}
+
+function displayPatients(patients) {
+    $('#patient-containter').html("");
+    for (var i = 0; i < patients.length; i++) {
+        var html = "<div class='single-patient' target='" + i + "'>" + patients[i].name + "</div>";
+        $('#patient-container').append(html);
+    }
+
 }
 
 /**
@@ -89,18 +105,7 @@ function setUpEventHandlers() {
 }
 
 $(document).ready(function () {
-
-    var myURL = window.location.href;
-    /*
-    var index = myURL.indexOf("access_token");
-    if (index == -1) {
-        window.location.replace("http://sso-dev.e-imo.com/core/connect/authorize?client_id=medrecon_imp&response_type=id_token token&scope=openid medrecon roles&redirect_uri=http://localhost:20857/");
-    } else {
-        token = myURL.substring(index + 1);
-        console.log(token);
-    }*/
-
-    displayPatients();
+    getPatients();
 })
 
 /* Sample POST request
