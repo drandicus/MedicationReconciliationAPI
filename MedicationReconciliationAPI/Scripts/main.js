@@ -89,11 +89,25 @@ function displayPatients(patients) {
 
 }
 
+function displayMedicalData(data, id) {
+    $(id).html("");
+    data.find("medication").each(function () {
+        $(id).append($(this).find("name").text())
+        $(id).append("<br>");
+    })
+}
+
 /**
     This takes the medical statment data from a single patient
 */
 function parseMedicalXML(data) {
+    var xml = $($.parseXML(data));
 
+    var hospital = xml.find("hospital");
+    var ePrescribe = xml.find("ePrescribe");
+
+    displayMedicalData(hospital, "#hospital-medication");
+    displayMedicalData(ePrescribe, "#eprescribe-medication");
 }
 
 function setUpEventHandlers() {
@@ -104,8 +118,1291 @@ function setUpEventHandlers() {
     })
 }
 
+
 $(document).ready(function () {
     getPatients();
+    
+
+    //Sample Testing
+    var data = `
+        <medication_reconciliation>
+    <patient_name>
+        <first_name>John</first_name>
+        <last_name>Travolta</last_name>
+    </patient_name>
+    <hospital>
+        <medication>
+            <name>cephalexin</name>
+            <sig>500 mg PO q6h</sig>
+        </medication>
+        <medication>
+            <name>enoxaparin</name>
+            <sig>40 mg SC daily</sig>
+        </medication>
+        <medication>
+            <name>insulin sliding scale</name>
+            <sig>SC q4h prn</sig>
+        </medication>
+        <medication>
+            <name>Lantus</name>
+            <sig>20 mg SC qHS</sig>
+        </medication>
+        <medication>
+            <name>acetaminophen</name>
+            <sig>1g PO q6h prn pain</sig>
+        </medication>
+        <medication>
+            <name>lorazepam</name>
+            <sig>1 mg PO q8h prn anxiety</sig>
+        </medication>
+        <medication>
+            <name>tramadol</name>
+            <sig>50 mg PO q6h prn pain</sig>
+        </medication>
+        <medication>
+            <name>donepezil</name>
+            <sig>10 mg PO qHS</sig>
+        </medication>
+        <medication>
+            <name>clopidogrel</name>
+            <sig>75 mg PO daily</sig>
+        </medication>
+        <medication>
+            <name>fluoxetine</name>
+            <sig>20 mg PO daily</sig>
+        </medication>
+        <medication>
+            <name>rosuvastatin</name>
+            <sig>40 mg PO daily</sig>
+        </medication>
+        <medication>
+            <name>metoprolol</name>
+            <sig>50 mg PO BID</sig>
+        </medication>
+    </hospital>
+    <ePrescribe>
+        <medication>
+            <name>Aricept</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>tramadol</name>
+            <sig>50 mg</sig>
+        </medication>
+        <medication>
+            <name>lorazepam</name>
+            <sig>1 mg</sig>
+        </medication>
+        <medication>
+            <name>acetaminophen</name>
+            <sig>650 mg/20.3 mL</sig>
+        </medication>
+        <medication>
+            <name>vitamin b12</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Tirosint</name>
+            <sig>100 mcg</sig>
+        </medication>
+        <medication>
+            <name>glyburide</name>
+            <sig>5 mg</sig>
+        </medication>
+        <medication>
+            <name>Pradaxa</name>
+            <sig>150 mg</sig>
+        </medication>
+        <medication>
+            <name>calcium carbonate</name>
+            <sig>500 mg calcium (1,250 mg)</sig>
+        </medication>
+        <medication>
+            <name>Calciferol</name>
+            <sig>8,000 unit/mL</sig>
+        </medication>
+        <medication>
+            <name>metformin</name>
+            <sig>850 mg</sig>
+        </medication>
+        <medication>
+            <name>temazepam</name>
+            <sig>22.5 mg</sig>
+        </medication>
+        <medication>
+            <name>MICRO K 10</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>VITAMIN C</name>
+            <sig>1 GM</sig>
+        </medication>
+        <medication>
+            <name>VITAMIN D</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>VITAMIN E</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>LUXIQ FOAM</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Ambien</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>Allegra Allergy</name>
+            <sig>180 mg</sig>
+        </medication>
+        <medication>
+            <name>Zyrtec</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>CALCIUM</name>
+            <sig>600 MG</sig>
+        </medication>
+        <medication>
+            <name>HYDROCHLOROTHIAZIDE</name>
+            <sig>25 mg</sig>
+        </medication>
+        <medication>
+            <name>Restoril</name>
+            <sig>15 mg</sig>
+        </medication>
+        <medication>
+            <name>FLONASE</name>
+            <sig>50 MCG/SPRAY</sig>
+        </medication>
+        <medication>
+            <name>OMEPRAZOLE</name>
+            <sig>40 MG</sig>
+        </medication>
+        <medication>
+            <name>AMLODIPINE</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ADVAIR DISKUS</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Rx for Hearing Aid</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Rx for Physical Therapy</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>lisinopril</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>LIDEX</name>
+            <sig>0.5 MG</sig>
+        </medication>
+        <medication>
+            <name>Benadryl</name>
+            <sig>25 mg</sig>
+        </medication>
+        <medication>
+            <name>Rx</name>
+            <sig>PHYSICAL THERAPY</sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig>250 mg</sig>
+        </medication>
+        <medication>
+            <name>VENTOLIN HFA</name>
+            <sig>0.09 MG/ACTUAT</sig>
+        </medication>
+        <medication>
+            <name>Rx for Physical Therapy</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>RX ORDER</name>
+            <sig>ULTRASOUND KIDNEYS</sig>
+        </medication>
+        <medication>
+            <name>AMBIEN</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>ECOTRIN</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>LEVAQUIN</name>
+            <sig>500 mg</sig>
+        </medication>
+        <medication>
+            <name>LEVAQUIN</name>
+            <sig>500 mg</sig>
+        </medication>
+        <medication>
+            <name>Rx for Hearing Aid</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Arimidex</name>
+            <sig>1 mg</sig>
+        </medication>
+        <medication>
+            <name>REMERON</name>
+            <sig>15 MG</sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig>250 mg</sig>
+        </medication>
+        <medication>
+            <name>Walter Smith Rx</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>pravastatin</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>omeprazole</name>
+            <sig>40 mg</sig>
+        </medication>
+        <medication>
+            <name>Rx for Physical Therapy</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig>250 mg</sig>
+        </medication>
+        <medication>
+            <name>Ativan</name>
+            <sig>1 mg</sig>
+        </medication>
+        <medication>
+            <name>AMBIEN</name>
+            <sig>5 mg</sig>
+        </medication>
+        <medication>
+            <name>RX ORDER</name>
+            <sig>ULTRASOUND KIDNEYS</sig>
+        </medication>
+        <medication>
+            <name>Rx for Hearing Aid</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Walter Smith Rx</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>FOSAMAX</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>RX ORDER</name>
+            <sig>ULTRASOUND KIDNEYS</sig>
+        </medication>
+        <medication>
+            <name>LEVAQUIN</name>
+            <sig>500 mg</sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig>250 mg</sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig>250 mg</sig>
+        </medication>
+        <medication>
+            <name>ADVAIR DISKUS</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>OMNARIS</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>LEVAQUIN</name>
+            <sig>500 mg</sig>
+        </medication>
+        <medication>
+            <name>Rx for CT of Abdomen</name>
+            <sig>With and Without Infusion</sig>
+        </medication>
+        <medication>
+            <name>Rx for Physical Therapy</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Voltaren</name>
+            <sig>1%</sig>
+        </medication>
+        <medication>
+            <name>COD LIVER OIL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>RX MRI LUMBAR SPINE</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>MEDROL DOSEPAK</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACCUPRIL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>primidone</name>
+            <sig>50 mg</sig>
+        </medication>
+        <medication>
+            <name>Norco</name>
+            <sig>5-325 mg</sig>
+        </medication>
+        <medication>
+            <name>Celebrex</name>
+            <sig>200 mg</sig>
+        </medication>
+        <medication>
+            <name>FISH OIL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Norco 5/325</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>GLUCOSAMINE-CHONDROINTIN</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>MOBIC</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>MVI</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>VITAMIN D3</name>
+            <sig>1000 int. units</sig>
+        </medication>
+        <medication>
+            <name>Primidone</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>PRAVACHOL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACEON</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ATORVASTATIN CALCIUM</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>clindamycin HCl</name>
+            <sig>300 mg</sig>
+        </medication>
+        <medication>
+            <name>TRIAMCINOLONE</name>
+            <sig>0.1 %</sig>
+        </medication>
+        <medication>
+            <name>ACTIVELLA</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Cymbalta</name>
+            <sig>30 mg</sig>
+        </medication>
+        <medication>
+            <name>ECOTRIN</name>
+            <sig>500 MG</sig>
+        </medication>
+        <medication>
+            <name>Avodart</name>
+            <sig>0.5 mg</sig>
+        </medication>
+        <medication>
+            <name>Aceon</name>
+            <sig>8 mg</sig>
+        </medication>
+        <medication>
+            <name>clindamycin HCl</name>
+            <sig>300 mg</sig>
+        </medication>
+        <medication>
+            <name>Betimol</name>
+            <sig>0.25%</sig>
+        </medication>
+        <medication>
+            <name>PIROXICAM</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Actonel</name>
+            <sig>30 mg</sig>
+        </medication>
+        <medication>
+            <name>Aceon</name>
+            <sig>4 mg</sig>
+        </medication>
+        <medication>
+            <name>Climara</name>
+            <sig>0.0375 mg/24 hr</sig>
+        </medication>
+        <medication>
+            <name>acyclovir</name>
+            <sig>200 mg</sig>
+        </medication>
+        <medication>
+            <name>ADALAT</name>
+            <sig>20 MG</sig>
+        </medication>
+        <medication>
+            <name>TRIAMCINOLONE</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>LANTUS INSULIN</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>atorvastatin</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>Abilify</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>ACTIGAL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACCOLATE</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Colace</name>
+            <sig>100 mg</sig>
+        </medication>
+        <medication>
+            <name>Abilify</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>ACTIGAL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACYCLOVIR</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Abilify</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>ACTIGAL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Actonel</name>
+            <sig>30 mg</sig>
+        </medication>
+        <medication>
+            <name>Zyprexa</name>
+            <sig>2.5 mg</sig>
+        </medication>
+        <medication>
+            <name>ACTOS</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>LITHIUM</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Dantrium</name>
+            <sig>25 mg</sig>
+        </medication>
+        <medication>
+            <name>Abilify</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>Claravis</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>Byetta</name>
+            <sig>5 mcg/dose (250 mcg/mL) 1.2 mL</sig>
+        </medication>
+        <medication>
+            <name>ACEON</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Actonel</name>
+            <sig>30 mg</sig>
+        </medication>
+        <medication>
+            <name>Dovonex</name>
+            <sig>0.005%</sig>
+        </medication>
+        <medication>
+            <name>ACTIGAL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACYCLOVIR</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Actonel</name>
+            <sig>30 mg</sig>
+        </medication>
+        <medication>
+            <name>acyclovir</name>
+            <sig>200 mg</sig>
+        </medication>
+        <medication>
+            <name>Estring</name>
+            <sig>2 mg</sig>
+        </medication>
+        <medication>
+            <name>ACCURETIC</name>
+            <sig></sig>
+        </medication>
+    </ePrescribe>
+    <shared>
+        <medication>
+            <name>lorazepam</name>
+            <sig>1 mg PO q8h prn anxiety</sig>
+        </medication>
+        <medication>
+            <name>tramadol</name>
+            <sig>50 mg PO q6h prn pain</sig>
+        </medication>
+    </shared>
+    <clientUnique>
+        <medication>
+            <name>insulin sliding scale</name>
+            <sig>SC q4h prn</sig>
+        </medication>
+        <medication>
+            <name>clopidogrel</name>
+            <sig>75 mg PO daily</sig>
+        </medication>
+    </clientUnique>
+    <clientSimilar>
+        <medication>
+            <name>cephalexin</name>
+            <sig>500 mg PO q6h</sig>
+        </medication>
+        <medication>
+            <name>cephalexin</name>
+            <sig>500 mg PO q6h</sig>
+        </medication>
+        <medication>
+            <name>cephalexin</name>
+            <sig>500 mg PO q6h</sig>
+        </medication>
+        <medication>
+            <name>cephalexin</name>
+            <sig>500 mg PO q6h</sig>
+        </medication>
+        <medication>
+            <name>cephalexin</name>
+            <sig>500 mg PO q6h</sig>
+        </medication>
+        <medication>
+            <name>cephalexin</name>
+            <sig>500 mg PO q6h</sig>
+        </medication>
+        <medication>
+            <name>enoxaparin</name>
+            <sig>40 mg SC daily</sig>
+        </medication>
+        <medication>
+            <name>enoxaparin</name>
+            <sig>40 mg SC daily</sig>
+        </medication>
+        <medication>
+            <name>Lantus</name>
+            <sig>20 mg SC qHS</sig>
+        </medication>
+        <medication>
+            <name>Lantus</name>
+            <sig>20 mg SC qHS</sig>
+        </medication>
+        <medication>
+            <name>Lantus</name>
+            <sig>20 mg SC qHS</sig>
+        </medication>
+        <medication>
+            <name>Lantus</name>
+            <sig>20 mg SC qHS</sig>
+        </medication>
+        <medication>
+            <name>Lantus</name>
+            <sig>20 mg SC qHS</sig>
+        </medication>
+        <medication>
+            <name>acetaminophen</name>
+            <sig>1g PO q6h prn pain</sig>
+        </medication>
+        <medication>
+            <name>lorazepam</name>
+            <sig>1 mg PO q8h prn anxiety</sig>
+        </medication>
+        <medication>
+            <name>lorazepam</name>
+            <sig>1 mg PO q8h prn anxiety</sig>
+        </medication>
+        <medication>
+            <name>tramadol</name>
+            <sig>50 mg PO q6h prn pain</sig>
+        </medication>
+        <medication>
+            <name>donepezil</name>
+            <sig>10 mg PO qHS</sig>
+        </medication>
+        <medication>
+            <name>donepezil</name>
+            <sig>10 mg PO qHS</sig>
+        </medication>
+        <medication>
+            <name>donepezil</name>
+            <sig>10 mg PO qHS</sig>
+        </medication>
+        <medication>
+            <name>donepezil</name>
+            <sig>10 mg PO qHS</sig>
+        </medication>
+        <medication>
+            <name>donepezil</name>
+            <sig>10 mg PO qHS</sig>
+        </medication>
+        <medication>
+            <name>donepezil</name>
+            <sig>10 mg PO qHS</sig>
+        </medication>
+        <medication>
+            <name>donepezil</name>
+            <sig>10 mg PO qHS</sig>
+        </medication>
+        <medication>
+            <name>donepezil</name>
+            <sig>10 mg PO qHS</sig>
+        </medication>
+        <medication>
+            <name>fluoxetine</name>
+            <sig>20 mg PO daily</sig>
+        </medication>
+        <medication>
+            <name>fluoxetine</name>
+            <sig>20 mg PO daily</sig>
+        </medication>
+        <medication>
+            <name>fluoxetine</name>
+            <sig>20 mg PO daily</sig>
+        </medication>
+        <medication>
+            <name>fluoxetine</name>
+            <sig>20 mg PO daily</sig>
+        </medication>
+        <medication>
+            <name>fluoxetine</name>
+            <sig>20 mg PO daily</sig>
+        </medication>
+        <medication>
+            <name>rosuvastatin</name>
+            <sig>40 mg PO daily</sig>
+        </medication>
+        <medication>
+            <name>rosuvastatin</name>
+            <sig>40 mg PO daily</sig>
+        </medication>
+        <medication>
+            <name>metoprolol</name>
+            <sig>50 mg PO BID</sig>
+        </medication>
+        <medication>
+            <name>metoprolol</name>
+            <sig>50 mg PO BID</sig>
+        </medication>
+    </clientSimilar>
+    <ePrescribeSimilar>
+        <medication>
+            <name>calcium carbonate</name>
+            <sig>500 mg calcium (1,250 mg)</sig>
+        </medication>
+        <medication>
+            <name>LEVAQUIN</name>
+            <sig>500 mg</sig>
+        </medication>
+        <medication>
+            <name>LEVAQUIN</name>
+            <sig>500 mg</sig>
+        </medication>
+        <medication>
+            <name>LEVAQUIN</name>
+            <sig>500 mg</sig>
+        </medication>
+        <medication>
+            <name>LEVAQUIN</name>
+            <sig>500 mg</sig>
+        </medication>
+        <medication>
+            <name>ECOTRIN</name>
+            <sig>500 MG</sig>
+        </medication>
+        <medication>
+            <name>OMEPRAZOLE</name>
+            <sig>40 MG</sig>
+        </medication>
+        <medication>
+            <name>omeprazole</name>
+            <sig>40 mg</sig>
+        </medication>
+        <medication>
+            <name>pravastatin</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>ADALAT</name>
+            <sig>20 MG</sig>
+        </medication>
+        <medication>
+            <name>Abilify</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>Abilify</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>Claravis</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>acetaminophen</name>
+            <sig>650 mg/20.3 mL</sig>
+        </medication>
+        <medication>
+            <name>Arimidex</name>
+            <sig>1 mg</sig>
+        </medication>
+        <medication>
+            <name>Ativan</name>
+            <sig>1 mg</sig>
+        </medication>
+        <medication>
+            <name>primidone</name>
+            <sig>50 mg</sig>
+        </medication>
+        <medication>
+            <name>Aricept</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>Ambien</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>Zyrtec</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>lisinopril</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>AMBIEN</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>atorvastatin</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>Abilify</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>Abilify</name>
+            <sig>10 mg</sig>
+        </medication>
+        <medication>
+            <name>pravastatin</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>ADALAT</name>
+            <sig>20 MG</sig>
+        </medication>
+        <medication>
+            <name>Abilify</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>Abilify</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>Claravis</name>
+            <sig>20 mg</sig>
+        </medication>
+        <medication>
+            <name>OMEPRAZOLE</name>
+            <sig>40 MG</sig>
+        </medication>
+        <medication>
+            <name>omeprazole</name>
+            <sig>40 mg</sig>
+        </medication>
+        <medication>
+            <name>tramadol</name>
+            <sig>50 mg</sig>
+        </medication>
+        <medication>
+            <name>primidone</name>
+            <sig>50 mg</sig>
+        </medication>
+    </ePrescribeSimilar>
+    <ePrescribeUnique>
+        <medication>
+            <name>lorazepam</name>
+            <sig>1 mg</sig>
+        </medication>
+        <medication>
+            <name>vitamin b12</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Tirosint</name>
+            <sig>100 mcg</sig>
+        </medication>
+        <medication>
+            <name>glyburide</name>
+            <sig>5 mg</sig>
+        </medication>
+        <medication>
+            <name>Pradaxa</name>
+            <sig>150 mg</sig>
+        </medication>
+        <medication>
+            <name>Calciferol</name>
+            <sig>8,000 unit/mL</sig>
+        </medication>
+        <medication>
+            <name>metformin</name>
+            <sig>850 mg</sig>
+        </medication>
+        <medication>
+            <name>temazepam</name>
+            <sig>22.5 mg</sig>
+        </medication>
+        <medication>
+            <name>MICRO K 10</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>VITAMIN C</name>
+            <sig>1 GM</sig>
+        </medication>
+        <medication>
+            <name>VITAMIN D</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>VITAMIN E</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>LUXIQ FOAM</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Allegra Allergy</name>
+            <sig>180 mg</sig>
+        </medication>
+        <medication>
+            <name>CALCIUM</name>
+            <sig>600 MG</sig>
+        </medication>
+        <medication>
+            <name>HYDROCHLOROTHIAZIDE</name>
+            <sig>25 mg</sig>
+        </medication>
+        <medication>
+            <name>Restoril</name>
+            <sig>15 mg</sig>
+        </medication>
+        <medication>
+            <name>FLONASE</name>
+            <sig>50 MCG/SPRAY</sig>
+        </medication>
+        <medication>
+            <name>AMLODIPINE</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ADVAIR DISKUS</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Rx for Hearing Aid</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Rx for Physical Therapy</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>LIDEX</name>
+            <sig>0.5 MG</sig>
+        </medication>
+        <medication>
+            <name>Benadryl</name>
+            <sig>25 mg</sig>
+        </medication>
+        <medication>
+            <name>Rx</name>
+            <sig>PHYSICAL THERAPY</sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig>250 mg</sig>
+        </medication>
+        <medication>
+            <name>VENTOLIN HFA</name>
+            <sig>0.09 MG/ACTUAT</sig>
+        </medication>
+        <medication>
+            <name>Rx for Physical Therapy</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>RX ORDER</name>
+            <sig>ULTRASOUND KIDNEYS</sig>
+        </medication>
+        <medication>
+            <name>ECOTRIN</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Rx for Hearing Aid</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>REMERON</name>
+            <sig>15 MG</sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig>250 mg</sig>
+        </medication>
+        <medication>
+            <name>Walter Smith Rx</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Rx for Physical Therapy</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig>250 mg</sig>
+        </medication>
+        <medication>
+            <name>AMBIEN</name>
+            <sig>5 mg</sig>
+        </medication>
+        <medication>
+            <name>RX ORDER</name>
+            <sig>ULTRASOUND KIDNEYS</sig>
+        </medication>
+        <medication>
+            <name>Rx for Hearing Aid</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Walter Smith Rx</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>FOSAMAX</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>RX ORDER</name>
+            <sig>ULTRASOUND KIDNEYS</sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig>250 mg</sig>
+        </medication>
+        <medication>
+            <name>ZITHROMAX</name>
+            <sig>250 mg</sig>
+        </medication>
+        <medication>
+            <name>ADVAIR DISKUS</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>OMNARIS</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Rx for CT of Abdomen</name>
+            <sig>With and Without Infusion</sig>
+        </medication>
+        <medication>
+            <name>Rx for Physical Therapy</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Voltaren</name>
+            <sig>1%</sig>
+        </medication>
+        <medication>
+            <name>COD LIVER OIL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>RX MRI LUMBAR SPINE</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>MEDROL DOSEPAK</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACCUPRIL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Norco</name>
+            <sig>5-325 mg</sig>
+        </medication>
+        <medication>
+            <name>Celebrex</name>
+            <sig>200 mg</sig>
+        </medication>
+        <medication>
+            <name>FISH OIL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Norco 5/325</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>GLUCOSAMINE-CHONDROINTIN</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>MOBIC</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>MVI</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>VITAMIN D3</name>
+            <sig>1000 int. units</sig>
+        </medication>
+        <medication>
+            <name>Primidone</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>PRAVACHOL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACEON</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ATORVASTATIN CALCIUM</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>clindamycin HCl</name>
+            <sig>300 mg</sig>
+        </medication>
+        <medication>
+            <name>TRIAMCINOLONE</name>
+            <sig>0.1 %</sig>
+        </medication>
+        <medication>
+            <name>ACTIVELLA</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Cymbalta</name>
+            <sig>30 mg</sig>
+        </medication>
+        <medication>
+            <name>Avodart</name>
+            <sig>0.5 mg</sig>
+        </medication>
+        <medication>
+            <name>Aceon</name>
+            <sig>8 mg</sig>
+        </medication>
+        <medication>
+            <name>clindamycin HCl</name>
+            <sig>300 mg</sig>
+        </medication>
+        <medication>
+            <name>Betimol</name>
+            <sig>0.25%</sig>
+        </medication>
+        <medication>
+            <name>PIROXICAM</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Actonel</name>
+            <sig>30 mg</sig>
+        </medication>
+        <medication>
+            <name>Aceon</name>
+            <sig>4 mg</sig>
+        </medication>
+        <medication>
+            <name>Climara</name>
+            <sig>0.0375 mg/24 hr</sig>
+        </medication>
+        <medication>
+            <name>acyclovir</name>
+            <sig>200 mg</sig>
+        </medication>
+        <medication>
+            <name>TRIAMCINOLONE</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>LANTUS INSULIN</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACTIGAL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACCOLATE</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Colace</name>
+            <sig>100 mg</sig>
+        </medication>
+        <medication>
+            <name>ACTIGAL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACYCLOVIR</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACTIGAL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Actonel</name>
+            <sig>30 mg</sig>
+        </medication>
+        <medication>
+            <name>Zyprexa</name>
+            <sig>2.5 mg</sig>
+        </medication>
+        <medication>
+            <name>ACTOS</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>LITHIUM</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Dantrium</name>
+            <sig>25 mg</sig>
+        </medication>
+        <medication>
+            <name>Byetta</name>
+            <sig>5 mcg/dose (250 mcg/mL) 1.2 mL</sig>
+        </medication>
+        <medication>
+            <name>ACEON</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Actonel</name>
+            <sig>30 mg</sig>
+        </medication>
+        <medication>
+            <name>Dovonex</name>
+            <sig>0.005%</sig>
+        </medication>
+        <medication>
+            <name>ACTIGAL</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>ACYCLOVIR</name>
+            <sig></sig>
+        </medication>
+        <medication>
+            <name>Actonel</name>
+            <sig>30 mg</sig>
+        </medication>
+        <medication>
+            <name>acyclovir</name>
+            <sig>200 mg</sig>
+        </medication>
+        <medication>
+            <name>Estring</name>
+            <sig>2 mg</sig>
+        </medication>
+        <medication>
+            <name>ACCURETIC</name>
+            <sig></sig>
+        </medication>
+    </ePrescribeUnique>
+</medication_reconciliation>`
+    parseMedicalXML(data);
+
 })
 
 /* Sample POST request

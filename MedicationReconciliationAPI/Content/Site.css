@@ -1,6 +1,6 @@
 ﻿body{
 	font-family: Calibri,Candara,Segoe,"Segoe UI",Optima,Arial,sans-serif;
-	overflow: hidden;
+	/*overflow: hidden; */
 }
 
 header {
@@ -119,4 +119,24 @@ header h3 {
     margin-top:10px;
     font-weight:bold;
     padding-left:10px;
+}
+
+.reconciliation-table{
+    position:relative;
+    width:100%;
+    padding:20px;
+}
+
+.reconciliation-table > div {
+    display:inline-block;
+    vertical-align:top;
+    text-align:center;
+    width:19%;
+    height:100px;
+}
+
+.reconciliation-table > div > h4 {
+    width:100%;
+    border-bottom: 1px solid #27546B;
+    color:#27546B;
 }
