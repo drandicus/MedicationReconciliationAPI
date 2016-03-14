@@ -6,6 +6,10 @@
 var selectedPatient = -1;
 var patients = [];
 var token = "";
+var hospitalMedication = [];
+var ePrescribeMedication = [];
+var similar = [];
+var shared = [];
 
 $('#search').click(function (e) {
     var searchTerm = $('#patient-search').val();
@@ -19,7 +23,7 @@ $('#search').click(function (e) {
             filteredList.push(patients[i]);
         }
     }
-    
+
     if (filteredList.length == 0) {
         alert("No Patient Found");
     } else {
@@ -91,27 +95,57 @@ function displayPatients(patients) {
 
 function displayMedicalData(data, id) {
     $(id).html("");
-    data.find("medication").each(function () {
-        $(id).append($(this).find("name").text())
-        $(id).append("<br>");
+    var medList = [];
+    data.forEach(function (element) {
+        var app = "<div>"
+        app += "<p><b>" + element.name + "</b></p>";
+        app += "<p>" + element.sig + "</p>";
+        app += "</div>";
+
+        $(id).append(app);
     })
 }
 
+function storeXML(data) {
+    var medList = [];
+    data.find("medication").each(function () {
+        var medicalObject = {
+            "name": $(this).find("name").text(),
+            "sig": $(this).find("sig").text()
+        }
+        medList.push(medicalObject);
+    })
+
+    return medList;
+}
+
+var hospitalMedication = [];
+var ePrescribeMedication = [];
+var hospitalUnique = [];
+var ePrescribeUnique = [];
+var similar = [];
+var shared = [];
 /**
     This takes the medical statment data from a single patient
 */
 function parseMedicalXML(data) {
     var xml = $($.parseXML(data));
 
-    var hospital = xml.find("hospital");
-    var ePrescribe = xml.find("ePrescribe");
+    hospitalMedication = storeXML(xml.find("hospital"));
+    ePrescribeMedication = storeXML(xml.find("ePrescribe"));
+    hospitalUnique = storeXML(xml.find("clientUnique"));
+    ePrescribeUnique = storeXML(xml.find("ePrescribeUnique"));
+    shared = storeXML(xml.find("shared"));
 
-    displayMedicalData(hospital, "#hospital-medication");
-    displayMedicalData(ePrescribe, "#eprescribe-medication");
+    displayMedicalData(hospitalMedication, "#hospital-medication");
+    displayMedicalData(ePrescribeMedication, "#eprescribe-medication");
+    displayMedicalData(hospitalUnique, '#hospital-unique');
+    displayMedicalData(ePrescribeUnique, '#eprescribe-unique');
+    displayMedicalData(shared, '#shared');
 }
 
 function setUpEventHandlers() {
-    $('.single-patient').click(function(e) {
+    $('.single-patient').click(function (e) {
         selectedPatient = $(e.target).attr('target');
         var patientName = patients[selectedPatient]["name"];
         displaySinglePatient(patientName);
@@ -121,7 +155,7 @@ function setUpEventHandlers() {
 
 $(document).ready(function () {
     getPatients();
-    
+
 
     //Sample Testing
     var data = `
@@ -1410,7 +1444,7 @@ $.ajax({
     type: "POST",
     beforeSend: function (req) {
         var header = "Bearer " + token;
-        req.setRequestHeader("Authorization", header) 
+        req.setRequestHeader("Authorization", header)
     },
     url: "/api/reconciliation",
     data: data,

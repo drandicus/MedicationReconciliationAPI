@@ -170,6 +170,8 @@ namespace MedicationReconciliation.Models
             List<MedicationStatement> hospitalSimilar = new List<MedicationStatement>();
             List<MedicationStatement> ePrescribeSimilar = new List<MedicationStatement>();
 
+            Dictionary<MedicationStatement, List<MedicationStatement>> similar = new Dictionary<MedicationStatement, List<MedicationStatement>>();
+
             foreach (var hospitalMedication in a)
             {
 
@@ -177,11 +179,18 @@ namespace MedicationReconciliation.Models
                 {
                     var comparison = compareMedication(hospitalMedication, ePrescribeMedication);
 
-                    if(comparison == "Equal")
+                    if (comparison == "Equal")
                     {
                         shared.Add(hospitalMedication);
                     } else if (comparison == "Similar")
                     {
+                        if (similar.ContainsKey(hospitalMedication))
+                        {
+                            similar[hospitalMedication].Add(ePrescribeMedication);
+                        } else
+                        {
+                            similar.Add(hospitalMedication, new List<MedicationStatement>() { ePrescribeMedication });
+                        }
                         hospitalSimilar.Add(hospitalMedication);
                         ePrescribeSimilar.Add(ePrescribeMedication);
                     }
@@ -191,7 +200,7 @@ namespace MedicationReconciliation.Models
             List<MedicationStatement> hospitalUnique = a.Except((shared.Union(hospitalSimilar))).ToList();
             List<MedicationStatement> ePrescribeUnique = b.Except((shared.Union(ePrescribeSimilar))).ToList();
 
-            return buildXMLString(a, b, shared, hospitalUnique, hospitalSimilar, ePrescribeSimilar, ePrescribeUnique);
+            return buildXMLString(a, b, shared, hospitalUnique, similar, ePrescribeUnique);
         }
         
         /**
@@ -287,6 +296,23 @@ namespace MedicationReconciliation.Models
         }
 
         /**
+            Helper function that gets the XML from a MedicationStatment element
+        */
+        private static String generateMedicationXML(MedicationStatement element)
+        {
+            String info = element.Dosage.First().Text;
+            String[] details = info.Split(new string[] { " - " }, StringSplitOptions.None);
+
+            String retVal = "";
+            retVal += "<medication>";
+            retVal += "<name>" + details[0] + "</name>";
+            retVal += "<sig>" + details[1] + "</sig>";
+            retVal += "</medication>";
+
+            return retVal;
+        }
+
+        /**
             Helper function that will generate the return XML string
             Generates the XML for a list of medication statments
         */
@@ -296,13 +322,7 @@ namespace MedicationReconciliation.Models
 
             foreach(var element in list)
             {
-                String info = element.Dosage.First().Text;
-                String[] details = info.Split(new string[] { " - " }, StringSplitOptions.None);
-
-                retVal += "<medication>";
-                retVal += "<name>" + details[0] + "</name>";
-                retVal += "<sig>" + details[1] + "</sig>";
-                retVal += "</medication>";
+                retVal += generateMedicationXML(element);
             }
 
             retVal += "</" + cat + ">";
@@ -310,9 +330,35 @@ namespace MedicationReconciliation.Models
         }
 
         /**
+            Helper function that generates XML from a dictionary object
+        **/
+        private static String generateDictionaryXML(Dictionary<MedicationStatement, List<MedicationStatement>> similar)
+        {
+            String retVal = "<similar>";
+
+            foreach(KeyValuePair<MedicationStatement, List<MedicationStatement>> entry in similar)
+            {
+                retVal += "<hospitalMedication>";
+                retVal += generateMedicationXML(entry.Key);
+                retVal += "<ePrescribeMedication>";
+
+                foreach(MedicationStatement element in entry.Value)
+                {
+                    retVal += generateMedicationXML(element);
+                }
+
+                retVal += "</ePrescribeMedication>";
+                retVal += "</hospitalMedication>";
+            }
+
+            retVal += "</similar>";
+            return retVal;
+        }
+
+        /**
             Main Helper function that generates the XML
         */
-        private static HttpResponseMessage buildXMLString(List<MedicationStatement> hospital, List<MedicationStatement> ePrescribe, List<MedicationStatement> shared, List<MedicationStatement> clientUnique, List<MedicationStatement> clientSimilar, List<MedicationStatement> rCopiaSimilar, List<MedicationStatement> rCopiaUnique)
+        private static HttpResponseMessage buildXMLString(List<MedicationStatement> hospital, List<MedicationStatement> ePrescribe, List<MedicationStatement> shared, List<MedicationStatement> clientUnique, Dictionary<MedicationStatement, List<MedicationStatement>> similar, List<MedicationStatement> rCopiaUnique)
         {
 
             var retval = "<medication_reconciliation><patient_name><first_name>" + externalID[0] + "</first_name><last_name>" + externalID[1] + "</last_name></patient_name>";
@@ -320,8 +366,7 @@ namespace MedicationReconciliation.Models
             retval += generateListXML(ePrescribe, "ePrescribe");
             retval += generateListXML(shared, "shared");
             retval += generateListXML(clientUnique, "clientUnique");
-            retval += generateListXML(clientSimilar, "clientSimilar");
-            retval += generateListXML(rCopiaSimilar, "ePrescribeSimilar");
+            retval += generateDictionaryXML(similar);
             retval += generateListXML(rCopiaUnique, "ePrescribeUnique");
             retval += "</medication_reconciliation>";
             return new HttpResponseMessage()

@@ -140,3 +140,10 @@ header h3 {
     border-bottom: 1px solid #27546B;
     color:#27546B;
 }
+
+#eprescribe-medication > div {
+    width:20%;
+    display:inline-block;
+    vertical-align:top;
+    height:100px;
+}
