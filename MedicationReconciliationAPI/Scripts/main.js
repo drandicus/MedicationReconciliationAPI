@@ -32,6 +32,12 @@ $('#search').click(function (e) {
 
 })
 
+$("#eprescribe-similar div").hover(function () {
+
+}, function () {
+
+})
+
 $('#reconcile-button').click(function (e) {
     var target = $('#reconciliation');
     console.log(target.offset().top);
@@ -39,6 +45,16 @@ $('#reconcile-button').click(function (e) {
     $('html, body').animate({
         scrollTop: target.offset().top
     }, 1000);
+
+    var url = "/api/record/GetXML?type=test&id=" + patients[selectedPatient].id;
+    $.get(url, function (data) {
+        var patientXML = data;
+        var postURL = "/api/reconciliation/";
+        $.post(postURL, patientXML, function (data) {
+            console.log(data);
+            parseMedicalXML(data);
+        })
+    })
 })
 
 $('#back').click(function (e) {
@@ -58,11 +74,7 @@ function displaySinglePatient(patientName) {
     $('#patient-name').html(patientName);
 
     var patient = patients[selectedPatient];
-
-    var getURL = '/api/record?id=' + patientID;
-    $.get(getURL, function (data) {
-        parseMedicalXML(data);
-    });
+    var patientID = patient.id;
 }
 
 /**
@@ -96,13 +108,23 @@ function displayPatients(patients) {
 function displayMedicalData(data, id) {
     $(id).html("");
     var medList = [];
+
+    var shadedColumns = [1, 3, 5];
+    var counter = 1;
     data.forEach(function (element) {
-        var app = "<div>"
+        var app = "";
+        if (shadedColumns.indexOf(counter) > -1) {
+            app = "<div class='shaded'>";
+            shadedColumns[shadedColumns.indexOf(counter)] += 5;
+        } else {
+            app = "<div class='unshaded'>"
+        }
         app += "<p><b>" + element.name + "</b></p>";
         app += "<p>" + element.sig + "</p>";
         app += "</div>";
 
         $(id).append(app);
+        counter++;
     })
 }
 
@@ -119,6 +141,63 @@ function storeXML(data) {
     return medList;
 }
 
+function storeSimilarXML(data) {
+    var medList = [];
+
+    data.find("hospitalMedication").each(function () {
+        var similarObject = {
+            "name": $(this).find("name").text(),
+            "sig": $(this).find("sig").text(),
+            "eprescribe": []
+        }
+        var ePrescribe = [];
+        $(this).find("ePrescribeMedication").each(function () {
+            var medicalObject = {
+                "name": $(this).find("name").text(),
+                "sig": $(this).find("sig").text()
+            }
+
+            ePrescribe.push(medicalObject);
+        })
+
+        similarObject.eprescribe = ePrescribe;
+
+        medList.push(similarObject);
+    })
+
+    return medList;
+}
+
+function displaySimilarMedicalData(data) {
+    var hID = "#hospital-similar";
+    var rID = "#eprescribe-similar";
+
+    $(hID).html("");
+    $(rID).html("");
+
+    var counter = 1;
+    data.forEach(function (elem) {
+        var rDiv = "<div data-num='" + counter + "'>"
+        console.log(elem);
+        elem.eprescribe.forEach(function (rElem) {
+            rDiv += "<p><b>" + rElem.name + "</b></p>";
+            rDiv += "<p>" + rElem.sig + "</p>";
+            rDiv += "<br/>";
+        })
+        rDiv += "</div>";
+
+        $(rID).append(rDiv);
+
+
+        var eDiv = "<div>"
+        eDiv += "<p><b>" + elem.name + "</b></p>";
+        eDiv += "<p>" + elem.sig + "</p>";
+        eDiv += "</div>"
+
+        $(hID).append(eDiv);
+    })
+}
+
 var hospitalMedication = [];
 var ePrescribeMedication = [];
 var hospitalUnique = [];
@@ -130,7 +209,6 @@ var shared = [];
 */
 function parseMedicalXML(data) {
     var xml = $($.parseXML(data));
-
     hospitalMedication = storeXML(xml.find("hospital"));
     ePrescribeMedication = storeXML(xml.find("ePrescribe"));
     hospitalUnique = storeXML(xml.find("clientUnique"));
@@ -142,6 +220,9 @@ function parseMedicalXML(data) {
     displayMedicalData(hospitalUnique, '#hospital-unique');
     displayMedicalData(ePrescribeUnique, '#eprescribe-unique');
     displayMedicalData(shared, '#shared');
+
+    similar = storeSimilarXML(xml.find("similar"));
+    displaySimilarMedicalData(similar)
 }
 
 function setUpEventHandlers() {
@@ -156,8 +237,6 @@ function setUpEventHandlers() {
 $(document).ready(function () {
     getPatients();
 
-
-    //Sample Testing
     var data = `
         <medication_reconciliation>
     <patient_name>
@@ -249,11 +328,11 @@ $(document).ready(function () {
         </medication>
         <medication>
             <name>calcium carbonate</name>
-            <sig>500 mg calcium (1,250 mg)</sig>
+            <sig>500 mg calcium (1, 250 mg) </sig>
         </medication>
         <medication>
             <name>Calciferol</name>
-            <sig>8,000 unit/mL</sig>
+            <sig>8, 000 unit/mL</sig>
         </medication>
         <medication>
             <name>metformin</name>
@@ -533,7 +612,7 @@ $(document).ready(function () {
         </medication>
         <medication>
             <name>VITAMIN D3</name>
-            <sig>1000 int. units</sig>
+            <sig>1000 int.units</sig>
         </medication>
         <medication>
             <name>Primidone</name>
@@ -748,282 +827,224 @@ $(document).ready(function () {
             <sig>75 mg PO daily</sig>
         </medication>
     </clientUnique>
-    <clientSimilar>
-        <medication>
-            <name>cephalexin</name>
-            <sig>500 mg PO q6h</sig>
-        </medication>
-        <medication>
-            <name>cephalexin</name>
-            <sig>500 mg PO q6h</sig>
-        </medication>
-        <medication>
-            <name>cephalexin</name>
-            <sig>500 mg PO q6h</sig>
-        </medication>
-        <medication>
-            <name>cephalexin</name>
-            <sig>500 mg PO q6h</sig>
-        </medication>
-        <medication>
-            <name>cephalexin</name>
-            <sig>500 mg PO q6h</sig>
-        </medication>
-        <medication>
-            <name>cephalexin</name>
-            <sig>500 mg PO q6h</sig>
-        </medication>
-        <medication>
-            <name>enoxaparin</name>
-            <sig>40 mg SC daily</sig>
-        </medication>
-        <medication>
-            <name>enoxaparin</name>
-            <sig>40 mg SC daily</sig>
-        </medication>
-        <medication>
-            <name>Lantus</name>
-            <sig>20 mg SC qHS</sig>
-        </medication>
-        <medication>
-            <name>Lantus</name>
-            <sig>20 mg SC qHS</sig>
-        </medication>
-        <medication>
-            <name>Lantus</name>
-            <sig>20 mg SC qHS</sig>
-        </medication>
-        <medication>
-            <name>Lantus</name>
-            <sig>20 mg SC qHS</sig>
-        </medication>
-        <medication>
-            <name>Lantus</name>
-            <sig>20 mg SC qHS</sig>
-        </medication>
-        <medication>
-            <name>acetaminophen</name>
-            <sig>1g PO q6h prn pain</sig>
-        </medication>
-        <medication>
-            <name>lorazepam</name>
-            <sig>1 mg PO q8h prn anxiety</sig>
-        </medication>
-        <medication>
-            <name>lorazepam</name>
-            <sig>1 mg PO q8h prn anxiety</sig>
-        </medication>
-        <medication>
-            <name>tramadol</name>
-            <sig>50 mg PO q6h prn pain</sig>
-        </medication>
-        <medication>
-            <name>donepezil</name>
-            <sig>10 mg PO qHS</sig>
-        </medication>
-        <medication>
-            <name>donepezil</name>
-            <sig>10 mg PO qHS</sig>
-        </medication>
-        <medication>
-            <name>donepezil</name>
-            <sig>10 mg PO qHS</sig>
-        </medication>
-        <medication>
-            <name>donepezil</name>
-            <sig>10 mg PO qHS</sig>
-        </medication>
-        <medication>
-            <name>donepezil</name>
-            <sig>10 mg PO qHS</sig>
-        </medication>
-        <medication>
-            <name>donepezil</name>
-            <sig>10 mg PO qHS</sig>
-        </medication>
-        <medication>
-            <name>donepezil</name>
-            <sig>10 mg PO qHS</sig>
-        </medication>
-        <medication>
-            <name>donepezil</name>
-            <sig>10 mg PO qHS</sig>
-        </medication>
-        <medication>
-            <name>fluoxetine</name>
-            <sig>20 mg PO daily</sig>
-        </medication>
-        <medication>
-            <name>fluoxetine</name>
-            <sig>20 mg PO daily</sig>
-        </medication>
-        <medication>
-            <name>fluoxetine</name>
-            <sig>20 mg PO daily</sig>
-        </medication>
-        <medication>
-            <name>fluoxetine</name>
-            <sig>20 mg PO daily</sig>
-        </medication>
-        <medication>
-            <name>fluoxetine</name>
-            <sig>20 mg PO daily</sig>
-        </medication>
-        <medication>
-            <name>rosuvastatin</name>
-            <sig>40 mg PO daily</sig>
-        </medication>
-        <medication>
-            <name>rosuvastatin</name>
-            <sig>40 mg PO daily</sig>
-        </medication>
-        <medication>
-            <name>metoprolol</name>
-            <sig>50 mg PO BID</sig>
-        </medication>
-        <medication>
-            <name>metoprolol</name>
-            <sig>50 mg PO BID</sig>
-        </medication>
-    </clientSimilar>
-    <ePrescribeSimilar>
-        <medication>
-            <name>calcium carbonate</name>
-            <sig>500 mg calcium (1,250 mg)</sig>
-        </medication>
-        <medication>
-            <name>LEVAQUIN</name>
-            <sig>500 mg</sig>
-        </medication>
-        <medication>
-            <name>LEVAQUIN</name>
-            <sig>500 mg</sig>
-        </medication>
-        <medication>
-            <name>LEVAQUIN</name>
-            <sig>500 mg</sig>
-        </medication>
-        <medication>
-            <name>LEVAQUIN</name>
-            <sig>500 mg</sig>
-        </medication>
-        <medication>
-            <name>ECOTRIN</name>
-            <sig>500 MG</sig>
-        </medication>
-        <medication>
-            <name>OMEPRAZOLE</name>
-            <sig>40 MG</sig>
-        </medication>
-        <medication>
-            <name>omeprazole</name>
-            <sig>40 mg</sig>
-        </medication>
-        <medication>
-            <name>pravastatin</name>
-            <sig>20 mg</sig>
-        </medication>
-        <medication>
-            <name>ADALAT</name>
-            <sig>20 MG</sig>
-        </medication>
-        <medication>
-            <name>Abilify</name>
-            <sig>20 mg</sig>
-        </medication>
-        <medication>
-            <name>Abilify</name>
-            <sig>20 mg</sig>
-        </medication>
-        <medication>
-            <name>Claravis</name>
-            <sig>20 mg</sig>
-        </medication>
-        <medication>
-            <name>acetaminophen</name>
-            <sig>650 mg/20.3 mL</sig>
-        </medication>
-        <medication>
-            <name>Arimidex</name>
-            <sig>1 mg</sig>
-        </medication>
-        <medication>
-            <name>Ativan</name>
-            <sig>1 mg</sig>
-        </medication>
-        <medication>
-            <name>primidone</name>
-            <sig>50 mg</sig>
-        </medication>
-        <medication>
-            <name>Aricept</name>
-            <sig>10 mg</sig>
-        </medication>
-        <medication>
-            <name>Ambien</name>
-            <sig>10 mg</sig>
-        </medication>
-        <medication>
-            <name>Zyrtec</name>
-            <sig>10 mg</sig>
-        </medication>
-        <medication>
-            <name>lisinopril</name>
-            <sig>10 mg</sig>
-        </medication>
-        <medication>
-            <name>AMBIEN</name>
-            <sig>10 mg</sig>
-        </medication>
-        <medication>
-            <name>atorvastatin</name>
-            <sig>10 mg</sig>
-        </medication>
-        <medication>
-            <name>Abilify</name>
-            <sig>10 mg</sig>
-        </medication>
-        <medication>
-            <name>Abilify</name>
-            <sig>10 mg</sig>
-        </medication>
-        <medication>
-            <name>pravastatin</name>
-            <sig>20 mg</sig>
-        </medication>
-        <medication>
-            <name>ADALAT</name>
-            <sig>20 MG</sig>
-        </medication>
-        <medication>
-            <name>Abilify</name>
-            <sig>20 mg</sig>
-        </medication>
-        <medication>
-            <name>Abilify</name>
-            <sig>20 mg</sig>
-        </medication>
-        <medication>
-            <name>Claravis</name>
-            <sig>20 mg</sig>
-        </medication>
-        <medication>
-            <name>OMEPRAZOLE</name>
-            <sig>40 MG</sig>
-        </medication>
-        <medication>
-            <name>omeprazole</name>
-            <sig>40 mg</sig>
-        </medication>
-        <medication>
-            <name>tramadol</name>
-            <sig>50 mg</sig>
-        </medication>
-        <medication>
-            <name>primidone</name>
-            <sig>50 mg</sig>
-        </medication>
-    </ePrescribeSimilar>
+    <similar>
+        <hospitalMedication>
+            <medication>
+                <name>cephalexin</name>
+                <sig>500 mg PO q6h</sig>
+            </medication>
+            <ePrescribeMedication>
+                <medication>
+                    <name>calcium carbonate</name>
+                    <sig>500 mg calcium (1, 250 mg) </sig>
+                </medication>
+                <medication>
+                    <name>LEVAQUIN</name>
+                    <sig>500 mg</sig>
+                </medication>
+                <medication>
+                    <name>LEVAQUIN</name>
+                    <sig>500 mg</sig>
+                </medication>
+                <medication>
+                    <name>LEVAQUIN</name>
+                    <sig>500 mg</sig>
+                </medication>
+                <medication>
+                    <name>LEVAQUIN</name>
+                    <sig>500 mg</sig>
+                </medication>
+                <medication>
+                    <name>ECOTRIN</name>
+                    <sig>500 MG</sig>
+                </medication>
+            </ePrescribeMedication>
+        </hospitalMedication>
+        <hospitalMedication>
+            <medication>
+                <name>enoxaparin</name>
+                <sig>40 mg SC daily</sig>
+            </medication>
+            <ePrescribeMedication>
+                <medication>
+                    <name>OMEPRAZOLE</name>
+                    <sig>40 MG</sig>
+                </medication>
+                <medication>
+                    <name>omeprazole</name>
+                    <sig>40 mg</sig>
+                </medication>
+            </ePrescribeMedication>
+        </hospitalMedication>
+        <hospitalMedication>
+            <medication>
+                <name>Lantus</name>
+                <sig>20 mg SC qHS</sig>
+            </medication>
+            <ePrescribeMedication>
+                <medication>
+                    <name>pravastatin</name>
+                    <sig>20 mg</sig>
+                </medication>
+                <medication>
+                    <name>ADALAT</name>
+                    <sig>20 MG</sig>
+                </medication>
+                <medication>
+                    <name>Abilify</name>
+                    <sig>20 mg</sig>
+                </medication>
+                <medication>
+                    <name>Abilify</name>
+                    <sig>20 mg</sig>
+                </medication>
+                <medication>
+                    <name>Claravis</name>
+                    <sig>20 mg</sig>
+                </medication>
+            </ePrescribeMedication>
+        </hospitalMedication>
+        <hospitalMedication>
+            <medication>
+                <name>acetaminophen</name>
+                <sig>1g PO q6h prn pain</sig>
+            </medication>
+            <ePrescribeMedication>
+                <medication>
+                    <name>acetaminophen</name>
+                    <sig>650 mg/20.3 mL</sig>
+                </medication>
+            </ePrescribeMedication>
+        </hospitalMedication>
+        <hospitalMedication>
+            <medication>
+                <name>lorazepam</name>
+                <sig>1 mg PO q8h prn anxiety</sig>
+            </medication>
+            <ePrescribeMedication>
+                <medication>
+                    <name>Arimidex</name>
+                    <sig>1 mg</sig>
+                </medication>
+                <medication>
+                    <name>Ativan</name>
+                    <sig>1 mg</sig>
+                </medication>
+            </ePrescribeMedication>
+        </hospitalMedication>
+        <hospitalMedication>
+            <medication>
+                <name>tramadol</name>
+                <sig>50 mg PO q6h prn pain</sig>
+            </medication>
+            <ePrescribeMedication>
+                <medication>
+                    <name>primidone</name>
+                    <sig>50 mg</sig>
+                </medication>
+            </ePrescribeMedication>
+        </hospitalMedication>
+        <hospitalMedication>
+            <medication>
+                <name>donepezil</name>
+                <sig>10 mg PO qHS</sig>
+            </medication>
+            <ePrescribeMedication>
+                <medication>
+                    <name>Aricept</name>
+                    <sig>10 mg</sig>
+                </medication>
+                <medication>
+                    <name>Ambien</name>
+                    <sig>10 mg</sig>
+                </medication>
+                <medication>
+                    <name>Zyrtec</name>
+                    <sig>10 mg</sig>
+                </medication>
+                <medication>
+                    <name>lisinopril</name>
+                    <sig>10 mg</sig>
+                </medication>
+                <medication>
+                    <name>AMBIEN</name>
+                    <sig>10 mg</sig>
+                </medication>
+                <medication>
+                    <name>atorvastatin</name>
+                    <sig>10 mg</sig>
+                </medication>
+                <medication>
+                    <name>Abilify</name>
+                    <sig>10 mg</sig>
+                </medication>
+                <medication>
+                    <name>Abilify</name>
+                    <sig>10 mg</sig>
+                </medication>
+            </ePrescribeMedication>
+        </hospitalMedication>
+        <hospitalMedication>
+            <medication>
+                <name>fluoxetine</name>
+                <sig>20 mg PO daily</sig>
+            </medication>
+            <ePrescribeMedication>
+                <medication>
+                    <name>pravastatin</name>
+                    <sig>20 mg</sig>
+                </medication>
+                <medication>
+                    <name>ADALAT</name>
+                    <sig>20 MG</sig>
+                </medication>
+                <medication>
+                    <name>Abilify</name>
+                    <sig>20 mg</sig>
+                </medication>
+                <medication>
+                    <name>Abilify</name>
+                    <sig>20 mg</sig>
+                </medication>
+                <medication>
+                    <name>Claravis</name>
+                    <sig>20 mg</sig>
+                </medication>
+            </ePrescribeMedication>
+        </hospitalMedication>
+        <hospitalMedication>
+            <medication>
+                <name>rosuvastatin</name>
+                <sig>40 mg PO daily</sig>
+            </medication>
+            <ePrescribeMedication>
+                <medication>
+                    <name>OMEPRAZOLE</name>
+                    <sig>40 MG</sig>
+                </medication>
+                <medication>
+                    <name>omeprazole</name>
+                    <sig>40 mg</sig>
+                </medication>
+            </ePrescribeMedication>
+        </hospitalMedication>
+        <hospitalMedication>
+            <medication>
+                <name>metoprolol</name>
+                <sig>50 mg PO BID</sig>
+            </medication>
+            <ePrescribeMedication>
+                <medication>
+                    <name>tramadol</name>
+                    <sig>50 mg</sig>
+                </medication>
+                <medication>
+                    <name>primidone</name>
+                    <sig>50 mg</sig>
+                </medication>
+            </ePrescribeMedication>
+        </hospitalMedication>
+    </similar>
     <ePrescribeUnique>
         <medication>
             <name>lorazepam</name>
@@ -1047,7 +1068,7 @@ $(document).ready(function () {
         </medication>
         <medication>
             <name>Calciferol</name>
-            <sig>8,000 unit/mL</sig>
+            <sig>8, 000 unit/mL</sig>
         </medication>
         <medication>
             <name>metformin</name>
@@ -1271,7 +1292,7 @@ $(document).ready(function () {
         </medication>
         <medication>
             <name>VITAMIN D3</name>
-            <sig>1000 int. units</sig>
+            <sig>1000 int.units</sig>
         </medication>
         <medication>
             <name>Primidone</name>
@@ -1434,9 +1455,10 @@ $(document).ready(function () {
             <sig></sig>
         </medication>
     </ePrescribeUnique>
-</medication_reconciliation>`
-    parseMedicalXML(data);
+</medication_reconciliation>
+        `
 
+    parseMedicalXML(data);
 })
 
 /* Sample POST request

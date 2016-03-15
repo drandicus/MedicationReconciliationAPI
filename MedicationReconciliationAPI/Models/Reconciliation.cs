@@ -45,6 +45,7 @@ namespace MedicationReconciliation.Models
         {
             String firstName = "";
             String lastName = "";
+            String rcopiaID = "";
             using (XmlReader reader = XmlReader.Create(new StringReader(clientInformation)))
             {
                 while (reader.Read())
@@ -61,6 +62,11 @@ namespace MedicationReconciliation.Models
                                 reader.Read();
                                 lastName = reader.Value;
                                 break;
+
+                            case "rcopia_id":
+                                reader.Read();
+                                rcopiaID = reader.Value;
+                                break;
                         }
                     }
 
@@ -68,7 +74,8 @@ namespace MedicationReconciliation.Models
             }
             return new String[] {
                 firstName,
-                lastName
+                lastName,
+                rcopiaID
             };
         }
 
@@ -157,7 +164,7 @@ namespace MedicationReconciliation.Models
         */
         private static List<MedicationStatement> parseEPrescribeInformation(String[] externalID)
         {
-            return new RcopiaObject(externalID[0]).listAll();
+            return new RcopiaObject(externalID[2]).listAll();
         }
 
         /**
@@ -371,7 +378,7 @@ namespace MedicationReconciliation.Models
             retval += "</medication_reconciliation>";
             return new HttpResponseMessage()
             {
-                Content = new StringContent(retval, Encoding.UTF8, "application/xml")
+                Content = new StringContent(retval, Encoding.UTF8, "text/html")
             };
         }
     }

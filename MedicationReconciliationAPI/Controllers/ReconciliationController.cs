@@ -30,7 +30,6 @@ namespace MedicationReconciliation.Controllers
         private RecordRespository recordRepository;
         private String connection = "";
 
-        [Authorize(Roles = "medrecon_user")]
         public HttpResponseMessage Post(HttpRequestMessage request)
         {
     

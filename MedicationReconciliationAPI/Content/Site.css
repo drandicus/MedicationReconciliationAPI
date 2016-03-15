@@ -3,6 +3,10 @@
 	/*overflow: hidden; */
 }
 
+p {
+    word-wrap:break-word;
+}
+
 header {
 	width:100%;
 	position:absolute;
@@ -141,9 +145,45 @@ header h3 {
     color:#27546B;
 }
 
-#eprescribe-medication > div {
+#eprescribe-medication > div,
+#hospital-medication > div {
     width:20%;
     display:inline-block;
     vertical-align:top;
     height:100px;
+    text-align:center;
+    padding-top:25px;
+}
+
+#eprescribe-medication > .shaded,
+#hospital-medication > .shaded {
+    background-color:#428bca;
+    color:white;
+    border-bottom:1px solid white;
+}
+#eprescribe-medication > .unshaded,
+#hospital-medication > .unshaded {
+    border-bottom:1px solid black;
+}
+
+#hospital-unique > div,
+#eprescribe-unique > div,
+#shared > div,
+#hospital-similar > div,
+#eprescribe-similar > div {
+    height:170px;
+    overflow: scroll;
+}
+
+#hospital-similar > div:hover,
+#eprescribe-similar > div:hover {
+    background-color:#B0C7CE;
+}
+
+.colorful {
+    background-color:#B0C7CE;
+}
+
+::-webkit-scrollbar { 
+    display: none; 
 }

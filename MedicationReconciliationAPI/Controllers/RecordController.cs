@@ -152,7 +152,7 @@ namespace MedicationReconciliationAPI.Controllers
             String given = humanname.Given.First();
             String family = humanname.Family.First();
 
-            String xml = "<patient><name><first_name>" + given + "</first_name><last_name>" + family + "</last_name></name><medications>";
+            String xml = "<patient><name><first_name>" + given + "</first_name><last_name>" + family + "</last_name></name><rcopia_id>" + id.ToString() + "</rcopia_id><medications>";
             foreach (var temp in medicationlist)
             {
 
